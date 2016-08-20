@@ -9,6 +9,9 @@ from urllib.request import urlopen
 
 INFO_DATASET_PATH = 'data/cnpj_info.xz'
 
+class TimeoutException(Exception):
+    pass
+
 def load_info_dataset():
     if os.path.exists(INFO_DATASET_PATH):
         return pd.read_csv(INFO_DATASET_PATH)
@@ -54,7 +57,7 @@ def remaining_cnpjs(info_dataset):
     return list(cnpj_list - already_fetched)
 
 def raise_timeout(signum, frame):
-    raise Exception('Timed out!')
+    raise TimeoutException()
 
 def fetch_cnpj(cnpj):
     url = 'http://receitaws.com.br/v1/cnpj/%s' % cnpj
@@ -80,5 +83,5 @@ for index, cnpj in enumerate(cnpj_list):
                             compression='xz',
                             encoding='utf-8',
                             index=False)
-    except Exception:
+    except TimeoutException:
         print('Skipping due timeout')
