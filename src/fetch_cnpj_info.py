@@ -4,7 +4,6 @@ import numpy as np
 import os.path
 import pandas as pd
 import pickle
-import signal
 import shutil
 from urllib.error import HTTPError
 from urllib.request import urlopen
