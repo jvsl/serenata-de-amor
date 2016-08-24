@@ -89,8 +89,6 @@ def import_cnpj_infos(info_dataset):
                         encoding='utf-8',
                         index=False)
 
-    shutil.rmtree(TEMP_PATH)
-
 
 
 if not os.path.exists(TEMP_PATH):
@@ -101,7 +99,7 @@ cnpj_list = remaining_cnpjs(info_dataset)
 print('%i CNPJ\'s to be fetched' % len(cnpj_list))
 
 with futures.ThreadPoolExecutor(max_workers=10) as executor:
-    future_to_cnpj_info = dict((executor.submit(fetch_cnpj_info, cnpj, 1), cnpj)
+    future_to_cnpj_info = dict((executor.submit(fetch_cnpj_info, cnpj), cnpj)
                                for cnpj in cnpj_list)
 
     for future in futures.as_completed(future_to_cnpj_info):
@@ -112,3 +110,5 @@ with futures.ThreadPoolExecutor(max_workers=10) as executor:
             write_cnpj_info(cnpj, future.result())
 
 import_cnpj_infos(info_dataset)
+
+shutil.rmtree(TEMP_PATH)
